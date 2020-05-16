@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DemoOTECWeb.Data;
 using DemoOTECWeb.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DemoOTECWeb.Controllers
 {
+    [Authorize(Roles ="Admin, Alumno")]
     public class EstudianteController : Controller
     {
         private readonly ApplicationDbContext _context;

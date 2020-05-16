@@ -35,7 +35,25 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
-                    </ul>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Curso" asp-action="Index">Curso</a>
+                            </li>
+                        }
+                        @if (User.IsInRole("Admin") || User.IsInRole("Relator"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Relator" asp-action="Index">Relator</a>
+                            </li>
+                        }
+                        @if (User.IsInRole("Admin") || User.IsInRole("Alumno"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Estudiante" asp-action="Index">Estudiante</a>
+                            </li>
+                        }
+                        </ul>
                 </div>
             </div>
         </nav>
