@@ -22,9 +22,47 @@ namespace DemoOTECWeb.Controllers
         }
 
         // GET: Curso
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? pageNumber)
         {
-            return View(await _context.Cursos.ToListAsync());
+            //return View(await _context.Curso.ToListAsync());
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewData["DateSortParm"] = sortOrder == "Date" ? "date_desc" : "Date";
+            //ViewData["CurrentFilter"] = searchString;
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            var cursos = from s in _context.Cursos
+                         select s;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                cursos = cursos.Where(s => s.Nombre.Contains(searchString));
+            }
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    cursos = cursos.OrderByDescending(s => s.Nombre);
+                    break;
+                case "Date":
+                    cursos = cursos.OrderBy(s => s.FechaInicio);
+                    break;
+                case "date_desc":
+                    cursos = cursos.OrderByDescending(s => s.FechaInicio);
+                    break;
+                default:
+                    cursos = cursos.OrderBy(s => s.Nombre);
+                    break;
+            }
+
+            int pageSize = 3;
+            return View(await PaginatedList<Curso>.CreateAsync(cursos.AsNoTracking(), pageNumber ?? 1, pageSize));
+
         }
 
         // GET: Curso/Details/5
