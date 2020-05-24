@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using DemoOTECWeb.Data;
 using DemoOTECWeb.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
 
 namespace DemoOTECWeb.Controllers
 {
@@ -16,9 +18,12 @@ namespace DemoOTECWeb.Controllers
     {
         private readonly ApplicationDbContext _context;
 
-        public EstudianteController(ApplicationDbContext context)
+        private readonly IHostingEnvironment _hostEnvironment;
+
+        public EstudianteController(ApplicationDbContext context, IHostingEnvironment hostingEnvironment)
         {
             _context = context;
+            this._hostEnvironment = hostingEnvironment;
         }
 
         // GET: Estudiante
@@ -59,10 +64,21 @@ namespace DemoOTECWeb.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,NombreCompleto,Apellido,Email,Edad,FechaNacimiento,PDE,NombreImagen,RelatorId")] Estudiante estudiante)
+        public async Task<IActionResult> Create([Bind("Id,NombreCompleto,Apellido,Email,Edad,FechaNacimiento,PDE,NombreImagen,ImagenArchivo,RelatorId")] Estudiante estudiante)
         {
             if (ModelState.IsValid)
             {
+                //Save image to wwwroot/image
+                string wwwRootPath = _hostEnvironment.WebRootPath;
+                string fileName = Path.GetFileNameWithoutExtension(estudiante.ImagenArchivo.FileName);
+                string extension = Path.GetExtension(estudiante.ImagenArchivo.FileName);
+                estudiante.NombreImagen = fileName = fileName + DateTime.Now.ToString("yymmssfff") + extension;
+                string path = Path.Combine(wwwRootPath + "/Image/", fileName);
+                using (var fileStream = new FileStream(path, FileMode.Create))
+                {
+                    await estudiante.ImagenArchivo.CopyToAsync(fileStream);
+                }
+                //Insert record
                 _context.Add(estudiante);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -149,6 +165,11 @@ namespace DemoOTECWeb.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var estudiante = await _context.Estudiantes.FindAsync(id);
+            //delete image from wwwroot/image
+            var imagePath = Path.Combine(_hostEnvironment.WebRootPath, "image", estudiante.NombreImagen);
+            if (System.IO.File.Exists(imagePath))
+                System.IO.File.Delete(imagePath);
+            //delete the record
             _context.Estudiantes.Remove(estudiante);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

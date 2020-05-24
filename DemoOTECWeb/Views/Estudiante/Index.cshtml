@@ -64,6 +64,9 @@
                 @Html.DisplayFor(modelItem => item.NombreImagen)
             </td>
             <td>
+                <img src="@("~/image/"+item.NombreImagen)" asp-append-version="true" width="250" height="250" />
+            </td>
+            <td>
                 @Html.DisplayFor(modelItem => item.Relator.NombreCompleto)
             </td>
             <td>
