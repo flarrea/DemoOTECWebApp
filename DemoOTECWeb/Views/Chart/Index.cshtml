@@ -1,0 +1,65 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Gráfico</h1>
+
+<title>@ViewData["Title"] - Chart</title>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+<div id="chart_div"></div>
+<script type="text/javascript">
+
+
+    google.charts.load('current', {
+        packages: ['corechart','line']
+    });
+    google.charts.setOnLoadCallback(LoadData);
+
+    function LoadData() {
+        $.ajax({
+
+            url: 'Chart/GetChart',
+            dataType: "json",
+            type: "GET",
+            error: function (xhr, status, error) {
+                var err = eval("(" + xhr.responseText + ")");
+                toastr.error(err.message);
+            },
+            success: function (data) {
+                CursoChart(data);
+                return false;
+            }
+        });
+        return false;
+    }
+
+    function CursoChart(data) {
+        var dataArray = [
+            ['Nombre', 'NumeroEstudiantes']
+        ];
+        $.each(data, function (i, item) {
+            dataArray.push([item.nombre, parseInt(item.numeroEstudiantes)]);
+        });
+        var data = google.visualization.arrayToDataTable(dataArray);
+        var options = {
+            title: 'Estudiantes por Curso ',
+            chartArea: {
+                width: '50%'
+            },
+            colors: ['#b0120a', '#7b1fa2', '#ffab91', '#d95f02'],
+            hAxis: {
+                title: 'Número de Estudiantes',
+                minValue: 0
+            },
+            vAxis: {
+                title: 'Nombre'
+            }
+        };
+        var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+
+        chart.draw(data, options);
+        return false;
+    }
+</script>
