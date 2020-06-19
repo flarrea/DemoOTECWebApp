@@ -1,0 +1,37 @@
+﻿@model IEnumerable<DemoOTECWeb.Models.CursoViewModels.ValorCursoEstudiante>
+
+@{
+    ViewData["Title"] = "Calculos";
+}
+
+<h2>Cálculos</h2>
+
+<table>
+    <tr>
+        <th>
+            Curso
+        </th>
+        <th>
+            Valor Total
+        </th>
+        <th>
+            No Alumnos
+        </th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nombre)
+            </td>
+            <td>
+                @item.CursoValor
+            </td>
+            <td>
+                @item.TotalAlumnos
+            </td>
+        </tr>
+    }
+</table>
+

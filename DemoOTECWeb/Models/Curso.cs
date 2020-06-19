@@ -19,6 +19,8 @@ namespace DemoOTECWeb.Models
         public DateTime FechaInicio { get; set; }
         [Display(Name = "Número de estudiantes")]
         public int NumeroEstudiantes { get; set; }
+        [Display(Name = "Valor del Curso")]
+        public double Valor { get; set; }
 
         //Relations
         public List<Relator> Relators { get; set; }

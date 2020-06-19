@@ -94,7 +94,7 @@ namespace DemoOTECWeb.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nombre,Lugar,FechaInicio,NumeroEstudiantes")] Curso curso)
+        public async Task<IActionResult> Create([Bind("Id,Nombre,Lugar,FechaInicio,NumeroEstudiantes,Valor")] Curso curso)
         {
             if (ModelState.IsValid)
             {
@@ -126,7 +126,7 @@ namespace DemoOTECWeb.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Lugar,FechaInicio,NumeroEstudiantes")] Curso curso)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Lugar,FechaInicio,NumeroEstudiantes,Valor")] Curso curso)
         {
             if (id != curso.Id)
             {
